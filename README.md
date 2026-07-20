@@ -58,7 +58,32 @@ dfir-ai-assistant/
 
 ## Быстрый старт
 
-(Будет добавлено по мере реализации. Минимально - см. docs/pipeline.md)
+См. [QUICKSTART.md](QUICKSTART.md) - подробная инструкция от git clone до отчёта агента.
+
+Кратко:
+
+```bash
+git clone https://github.com/JrScriptKiddie/dfir-ai-assistant.git
+cd dfir-ai-assistant
+pip install -e ".[dev]"
+cp .env.example .env  # заполнить API-ключ
+
+# 1. plaso -> таймлайн
+log2timeline --storage-file data/timelines/my-case/my-case.plaso \
+  --parsers "winevtx,winreg,prefetch,filestat" data/triage/my-case/
+psort -o json_line -w data/timelines/my-case/my-case.timeline.jsonl \
+  data/timelines/my-case/my-case.plaso
+
+# 2. Нормализация + индексация
+python -m src.pipeline.runner my-case
+
+# 3. Агент (compromise assessment)
+python -m src.agents.cli assess --case my-case --k 25
+```
+
+## Использование через AI-агентов (Hermes, Codex, Claude Code)
+
+Пайплайн вызывается через shell-команды или Python API. См. [QUICKSTART.md](QUICKSTART.md#5-использование-через-ai-агентов-hermes-codex-и-тд).
 
 ## Лицензия
 
