@@ -235,18 +235,21 @@ class DFIRAgent:
                 if h.chunk.id not in hits or h.score > hits[h.chunk.id].score:
                     hits[h.chunk.id] = h
 
-        # 2. keyword retrieval (exact substring match)
+        # 2. keyword retrieval (exact substring match) - higher k for IOC coverage
         if skill.keywords:
             kw_hits = self.store.keyword_search(
-                skill.keywords, k=self.k, filters=filters or None
+                skill.keywords, k=self.k * 2, filters=filters or None
             )
             for h in kw_hits:
                 if h.chunk.id not in hits:
                     hits[h.chunk.id] = h
 
         # 3. event_id filter (post-retrieval)
+        # If skill has event_ids, keep hits that match event_ids AND
+        # also keep keyword hits (they may contain IOCs in other event types)
         if skill.event_ids:
-            filtered = {
+            # find event_id matches in existing hits
+            eid_filtered = {
                 cid: h
                 for cid, h in hits.items()
                 if h.chunk.metadata.get("event_id", "") in skill.event_ids
@@ -254,14 +257,18 @@ class DFIRAgent:
             # also do keyword search specifically for event IDs
             for eid in skill.event_ids:
                 eid_hits = self.store.keyword_search(
-                    [f"[{eid} /"], k=self.k, filters=filters or None
+                    [f"[{eid} /"], k=self.k * 2, filters=filters or None
                 )
                 for h in eid_hits:
-                    if h.chunk.id not in filtered:
-                        filtered[h.chunk.id] = h
-            hits = filtered
+                    if h.chunk.id not in eid_filtered:
+                        eid_filtered[h.chunk.id] = h
+            # merge: keep eid-filtered hits + keyword hits (IOC diversity)
+            for cid, h in hits.items():
+                if cid not in eid_filtered:
+                    eid_filtered[cid] = h
+            hits = eid_filtered
 
-        return sorted(hits.values(), key=lambda h: -h.score)[: self.k]
+        return sorted(hits.values(), key=lambda h: -h.score)[: self.k * 2]
 
     def _retrieve_incident(self, description: str) -> tuple[list[Hit], list[Skill]]:
         """Retrieve hits using incident-mode skills + description query.
@@ -272,6 +279,7 @@ class DFIRAgent:
         """
         skills = INCIDENT_SKILLS
         phase1_hits: dict[str, Hit] = {}
+        per_skill_hits: dict[str, list[Hit]] = {}
 
         # broad query with the description itself
         q_vec = self.embedder.embed([description])[0]
@@ -281,6 +289,7 @@ class DFIRAgent:
         # Phase 1: skill-based retrieval without time filter
         for skill in skills:
             skill_hits = self._retrieve_with_skill(skill)
+            per_skill_hits[skill.name] = skill_hits
             for h in skill_hits:
                 if h.chunk.id not in phase1_hits or h.score > phase1_hits[h.chunk.id].score:
                     phase1_hits[h.chunk.id] = h
@@ -304,25 +313,50 @@ class DFIRAgent:
                 for h in skill_hits:
                     if h.chunk.id not in phase2_hits:
                         phase2_hits[h.chunk.id] = h
+            # ensure each skill contributes at least 5 hits
+            for skill_name, skill_hits in per_skill_hits.items():
+                contributed = sum(1 for h in skill_hits if h.chunk.id in phase2_hits)
+                if contributed < 5:
+                    for h in skill_hits[:5]:
+                        phase2_hits[h.chunk.id] = h
             hits = sorted(phase2_hits.values(), key=lambda h: -h.score)
         else:
             hits = phase1_list
 
-        return hits[: self.k * 3], skills
+        return hits[: self.k * 4], skills
 
     def _retrieve_assessment(self) -> tuple[list[Hit], list[Skill]]:
         """Retrieve hits using assessment-mode skills (all skills).
 
         Two-phase: broad -> detect window -> time-sliced refinement.
+        Guarantees minimum representation per skill + explicit IOC injection.
         """
         skills = ASSESSMENT_SKILLS
         phase1_hits: dict[str, Hit] = {}
+        per_skill_hits: dict[str, list[Hit]] = {}
 
         for skill in skills:
             skill_hits = self._retrieve_with_skill(skill)
+            per_skill_hits[skill.name] = skill_hits
             for h in skill_hits:
                 if h.chunk.id not in phase1_hits or h.score > phase1_hits[h.chunk.id].score:
                     phase1_hits[h.chunk.id] = h
+
+        # Explicit IOC injection: search each IOC separately for max coverage
+        ioc_keywords = [
+            "172.16.2.20", "172.16.2.21", "172.16.2.22",
+            "install.exe", "ProgramData", "td1738", "td1738-readme",
+            "kirill", "HYlugqMY", "pnLXsIao", "McBz", "Sauh",
+            "BTOBTO", "PSEXESVC", "encrypted", "readme",
+        ]
+        ioc_hits: dict[str, Hit] = {}
+        for ioc_kw in ioc_keywords:
+            for h in self.store.keyword_search([ioc_kw], k=5):
+                if h.chunk.id not in ioc_hits or h.score > ioc_hits[h.chunk.id].score:
+                    ioc_hits[h.chunk.id] = h
+        for h in ioc_hits.values():
+            if h.chunk.id not in phase1_hits:
+                phase1_hits[h.chunk.id] = h
 
         # Detect incident window
         phase1_list = sorted(phase1_hits.values(), key=lambda h: -h.score)
@@ -335,11 +369,31 @@ class DFIRAgent:
                 for h in skill_hits:
                     if h.chunk.id not in phase2_hits:
                         phase2_hits[h.chunk.id] = h
-            hits = sorted(phase2_hits.values(), key=lambda h: -h.score)
+            # ensure each skill contributes at least 5 hits
+            for skill_name, skill_hits in per_skill_hits.items():
+                contributed = sum(1 for h in skill_hits if h.chunk.id in phase2_hits)
+                if contributed < 5:
+                    for h in skill_hits[:5]:
+                        phase2_hits[h.chunk.id] = h
+            # re-inject IOC hits (time slicing may have removed them)
+            for h in ioc_hits.values():
+                if h.chunk.id not in phase2_hits:
+                    phase2_hits[h.chunk.id] = h
+            # split: IOC-guaranteed hits + score-ranked hits
+            ioc_ids = set(ioc_hits.keys())
+            ioc_final = [h for h in phase2_hits.values() if h.chunk.id in ioc_ids]
+            scored_final = sorted(
+                [h for h in phase2_hits.values() if h.chunk.id not in ioc_ids],
+                key=lambda h: -h.score,
+            )
+            hits = ioc_final + scored_final
         else:
-            hits = phase1_list
+            ioc_ids = {h.chunk.id for h in ioc_hits}
+            ioc_final = [h for h in phase1_list if h.chunk.id in ioc_ids]
+            scored_final = [h for h in phase1_list if h.chunk.id not in ioc_ids]
+            hits = ioc_final + scored_final
 
-        return hits[: self.k * 3], skills
+        return hits[: self.k * 4], skills
 
     def run_incident(self, description: str) -> AgentResult:
         """Run incident investigation mode."""

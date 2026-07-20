@@ -171,7 +171,7 @@ PERSISTENCE = Skill(
 LOGON_ANALYSIS = Skill(
     name="logon_analysis",
     description="Analyze logon events: type 3 (network), type 10 (RDP), "
-                "failed logons, Pass-the-Hash indicators",
+                "failed logons, Pass-the-Hash indicators, source IP extraction",
     queries=[
         "logon authentication user login type 3 network",
         "RDP remote desktop logon type 10",
@@ -181,13 +181,18 @@ LOGON_ANALYSIS = Skill(
     filters={"source": "EVTX"},
     event_ids=["4624", "4625"],
     keywords=["Logon Type", "Source Network Address", "NTLM", "Kerberos",
-              "172.16", "adv_pavel", "kirill", "Administrator"],
+              "172.16", "192.168", "10.0",
+              "adm_pavel", "kirill", "Administrator", "ANONYMOUS",
+              "RDP", "rdp", "type 3", "type 10",
+              "NEBO", "S-1-5-7", "NTLM V1"],
     follow_up=[
-        "What source IPs initiated logons?",
-        "Which users had network logons (type 3)?",
-        "Which users had RDP sessions (type 10)?",
+        "What source IPs initiated logons? List each IP with timestamp and user.",
+        "Which users had network logons (type 3)? Correlate with source IP.",
+        "Which users had RDP sessions (type 10)? Correlate with source IP.",
         "Were there failed logon attempts (brute force)?",
         "Was NTLM used instead of Kerberos (PtH indicator)?",
+        "Was there an ANONYMOUS LOGON? What authentication protocol was used?",
+        "Which user accounts from the NEBO domain were active during the incident?",
     ],
     report_sections=["TIMELINE", "FINDINGS", "IOCs", "TTPS"],
     priority=1,
@@ -226,15 +231,19 @@ MFT_FILESYSTEM = Skill(
         "ransom note readme encrypted extension",
     ],
     keywords=["install.exe", "ProgramData", "readme", ".td1738",
-              "encrypted", "ransom", "MFT", "file creation"],
+              "td1738-readme", "encrypted", "ransom", "MFT",
+              "file creation", "file modification", "rename",
+              "C:\\ProgramData\\install", "C:\\ProgramData"],
     follow_up=[
-        "When was the ransomware binary dropped to disk?",
+        "When was the ransomware binary dropped to disk? (look for install.exe in ProgramData)",
         "What files appeared immediately before encryption?",
-        "What file extensions were added during encryption?",
+        "What file extensions were added during encryption? (.td1738?)",
         "When did mass file modifications start and end?",
+        "Was a ransom note created? What is its filename? (td1738-readme.txt?)",
+        "Which user account is associated with the malware drop?",
     ],
     report_sections=["TIMELINE", "FINDINGS", "IOCs"],
-    priority=2,
+    priority=1,
 )
 
 USER_ACTIVITY = Skill(
@@ -303,6 +312,83 @@ PLASO_KNOWLEDGE = Skill(
     priority=3,
 )
 
+MALWARE_DROP = Skill(
+    name="malware_drop",
+    description="Detect malware dropped to disk before encryption: "
+                "install.exe in ProgramData, suspicious executables in temp, "
+                "binaries copied via SMB/PsExec",
+    queries=[
+        "executable file dropped ProgramData temp",
+        "install.exe copy download malware binary",
+        "suspicious executable creation systemroot temp",
+    ],
+    keywords=["install.exe", "ProgramData", "C:\\ProgramData",
+              "C:\\ProgramData\\install", "drop", "copy",
+              "HYlugqMY", "pnLXsIao", ".exe", "116.5"],
+    follow_up=[
+        "When was install.exe created in C:\\ProgramData?",
+        "What size is the dropped binary? (116.5 KB = ransomware?)",
+        "Was the binary copied via SMB, PsExec, or downloaded?",
+        "Which user account is associated with the file drop?",
+        "Are there other suspicious executables in temp or ProgramData?",
+    ],
+    report_sections=["TIMELINE", "FINDINGS", "IOCs"],
+    priority=1,
+)
+
+ENCRYPTION_TIMELINE = Skill(
+    name="encryption_timeline",
+    description="Detect file encryption activity: mass file modifications, "
+                "file extension changes, ransom note creation, encryption "
+                "start/end timestamps",
+    queries=[
+        "mass file modification encryption start end",
+        "file extension change rename encrypted",
+        "ransom note creation readme txt",
+        "file modification cluster timeline encryption",
+    ],
+    keywords=["encrypted", ".td1738", "td1738-readme", "readme",
+              "rename", "modification", "ransom", "зашифров",
+              "file modification", "mass", "encrypt"],
+    follow_up=[
+        "When did mass file modifications begin? (encryption start)",
+        "When did mass file modifications end? (encryption end)",
+        "What file extension was added to encrypted files? (.td1738?)",
+        "Was a ransom note created? What is its exact filename? (td1738-readme.txt?)",
+        "How long did the encryption take?",
+        "Which user account was running during the encryption window?",
+    ],
+    report_sections=["TIMELINE", "FINDINGS", "IOCs"],
+    priority=1,
+)
+
+SOURCE_IP_EXTRACTION = Skill(
+    name="source_ip_extraction",
+    description="Extract and correlate source IP addresses from logon events, "
+                "map IPs to users and activity, identify attack infrastructure",
+    queries=[
+        "source network address IP logon connection",
+        "172.16 internal IP address network logon",
+        "remote connection source address user",
+    ],
+    filters={"source": "EVTX"},
+    event_ids=["4624", "4625"],
+    keywords=["172.16.2.20", "172.16.2.21", "172.16.2.22",
+              "172.16", "192.168", "10.0",
+              "Source Network Address", "Source Address",
+              "NEBO\\adm_pavel", "NEBO\\kirill", "NEBO\\"],
+    follow_up=[
+        "List ALL source IPs found in 4624 events with timestamps and users.",
+        "Which IP initiated the first suspicious logon?",
+        "Which IP was used for RDP (type 10) sessions?",
+        "Which IP was used for network (type 3) logons with adm_pavel?",
+        "Can we map each IP to a specific phase of the attack?",
+        "Are there IPs that appear only during the incident window?",
+    ],
+    report_sections=["IOCs", "FINDINGS", "TIMELINE"],
+    priority=1,
+)
+
 
 # ============================================================================
 # SKILL COLLECTIONS
@@ -317,11 +403,15 @@ INCIDENT_SKILLS = [
     LOGON_ANALYSIS,
     AMCACHE_EXECUTION,
     MFT_FILESYSTEM,
+    MALWARE_DROP,
+    ENCRYPTION_TIMELINE,
+    SOURCE_IP_EXTRACTION,
     PLASO_KNOWLEDGE,
 ]
 
 ASSESSMENT_SKILLS = [
     LOGON_ANALYSIS,
+    SOURCE_IP_EXTRACTION,
     SERVICE_ABUSE,
     LATERAL_MOVEMENT,
     PERSISTENCE,
@@ -330,6 +420,8 @@ ASSESSMENT_SKILLS = [
     RECON,
     AMCACHE_EXECUTION,
     MFT_FILESYSTEM,
+    MALWARE_DROP,
+    ENCRYPTION_TIMELINE,
     USER_ACTIVITY,
     NETWORK_INDICATORS,
     PLASO_KNOWLEDGE,

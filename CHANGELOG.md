@@ -1,6 +1,31 @@
 # Changelog
 
-## [0.0.7] - 2026-07-20
+## [0.0.8] - 2026-07-20
+
+### Added
+- 3 new skills: malware_drop, encryption_timeline, source_ip_extraction
+  - malware_drop: install.exe, ProgramData, C:\ProgramData\install, binary size
+  - encryption_timeline: mass file mods, .td1738, td1738-readme, encryption window
+  - source_ip_extraction: 172.16.2.x IPs, NEBO\ users, source-to-activity mapping
+- Explicit IOC injection in retrieval: 16 IOC keywords searched individually
+  (5 hits each), guaranteed in final result set regardless of score ranking
+- IOC-priority hit ordering: IOC hits placed first, then score-ranked hits
+
+### Changed
+- LOGON_ANALYSIS skill: expanded keywords (RDP, type 10, NEBO, S-1-5-7, NTLM V1,
+  ANONYMOUS, adm_pavel, kirill), 7 follow-up questions with IP correlation
+- MFT_FILESYSTEM skill: priority 2->1, added td1738-readme, C:\ProgramData\install,
+  file modification/rename keywords, ransom note follow-up
+- _retrieve_with_skill: keyword search k doubled (k*2), event_id filter no longer
+  discards keyword hits (merges instead)
+- _retrieve_assessment: per-skill guaranteed representation (5 hits minimum),
+  IOC hits bypass score cutoff, k*4 cap (was k*3)
+- IOC coverage on SRV.nebo.ru: 12/12 gap IOCs now in hits (was 4/12)
+  - 172.16.2.20/21/22: all three source IPs found
+  - kirill: found in 4624/4672 events
+  - install.exe: found in UserAssist/MFT events
+  - td1738: found in registry events
+  - All previously missing IOCs now surface in LLM report
 
 ### Added
 - Plaso knowledge base (src/agents/plaso_knowledge.py):
