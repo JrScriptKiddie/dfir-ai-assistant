@@ -302,3 +302,126 @@ class TIResult:
   (Альтернатива: локальный MISP)
 - Как мержить conflicting verdicts из разных TI-источников?
 - Авто-extraction TTPs из PDF: какой LLM использовать? (glm-5.2 через Ollama Cloud)
+
+## Sanitizer / Masking Pipeline (implemented)
+
+Проблема: forensic logs могут содержать пароли, токены, хэши, PII.
+Отправка в cloud LLM (Ollama Cloud, OpenAI) создаёт риск утечки.
+
+Решение: src/pipeline/sanitizer.py - препроцессинг логов перед RAG.
+
+Пайплайн:
+```
+[events.jsonl] -> Sanitizer.sanitize_events_file() -> sanitized.jsonl
+-> chunker -> RAG (LLM видит только masked данные)
+```
+
+Стратегии маскирования:
+- REDACT: [REDACTED:TYPE] (passwords, API keys, JWT, credit cards, private keys)
+- HASH: [HASH:abc123] (NTLM/SHA-1/SHA-256 - preserves correlation, hides value)
+- PARTIAL: 172.16.[***].20 (IPs), jo***@company.com (emails)
+- TOKENIZE: [IP_001] (stable per unique value - preserves correlation)
+
+Конфигурация:
+- IPs по умолчанию НЕ маскируются (DFIR needs IPs)
+- Token map сохраняется для de-anonymization авторизованным аналитиком
+- Маскируются: passwords, NTLM/SHA hashes, API keys, JWT, emails, credit cards, private keys
+
+## Hallucination Control и Human-in-the-Loop
+
+### Проблема: галлюцинации в DFIR
+
+В DFIR галлюцинация модели (выдуманный CVE, ошибочная интерпретация флага
+команды, придуманный IOC) может привести к неверному решению по изоляции
+хоста или пропуску закрепления вредоноса. Цена ошибки выше чем в chatbot.
+
+### Strict Grounding (TODO)
+
+Каждый вывод в отчёте ассистента должен содержать прямую ссылку на
+конкретную строку лога или артефакт:
+- "Процесс install.exe запущен [chunk_id=2a6482f1052dcdd0, EventID 4688]"
+- "Сервис McBz установлен [chunk_id=5be9b34ade90605c, EventID 7045]"
+- Без ссылки = гипотеза, не факт
+
+Реализация:
+1. Post-generation validation: парсим отчёт LLM, извлекаем все [chunk_id] ссылки
+2. Проверяем что каждый chunk_id существует в RAG hits
+3. Проверяем что утверждаемое в тексте соответствует содержимому chunk
+4. Помечаем unsupported claims как "UNVERIFIED" в отчёте
+5. Confidence score: % утверждений с валидной ссылкой
+
+```python
+class GroundingValidator:
+    def validate(self, report: str, hits: list[Hit]) -> GroundingResult:
+        """Check that all claims in report reference valid chunk_ids."""
+        cited_ids = extract_citations(report)
+        hit_ids = {h.chunk.id for h in hits}
+        valid = cited_ids & hit_ids
+        invalid = cited_ids - hit_ids
+        unsupported = find_unsupported_claims(report, hits)
+        return GroundingResult(
+            cited=valid, invalid=invalid, unsupported=unsupported,
+            confidence=len(valid) / max(len(cited), 1)
+        )
+```
+
+### Copilot вместо Autopilot (TODO)
+
+Ассистент предлагает целевые действия (playbooks) и формирует CLI-команды
+для реагирования, но финальное исполнение оставляет за оператором.
+
+Режимы работы:
+1. ANALYZE (текущий): только анализ и отчёт, никаких действий
+2. RECOMMEND (TODO): отчёт + playbook recommendations (CLI commands)
+3. EXECUTE (future, requires --approve flag): выполняет playbook с подтверждением
+
+Playbook recommendations в отчёте:
+```
+## RECOMMENDED ACTIONS (require operator approval)
+
+1. Isolate SRV.nebo.ru from network
+   CLI: netsh interface set interface "Ethernet" admin=disable
+   RISK: prevents lateral movement but may lose volatile evidence
+
+2. Disable compromised account adm_pavel
+   CLI: net user adm_pavel /active:no /domain
+   RISK: may impact legitimate services using this account
+
+3. Block SMB from 172.16.2.22
+   CLI: netsh advfirewall firewall add rule name="Block-Attacker" 
+        dir=in action=block remoteip=172.16.2.22
+   RISK: none (attacker IP)
+
+[!] All actions require explicit operator approval before execution.
+```
+
+Human-in-the-Loop workflow:
+```
+[Agent Report + Recommendations]
+       |
+       v
+[Operator Review]
+  ├── Approve action 1 -> execute
+  ├── Modify action 2 -> execute modified
+  ├── Reject action 3 -> skip
+  └── Request more info -> agent re-analyzes
+```
+
+### Confidence Scoring (TODO)
+
+Каждый раздел отчёта получает confidence score:
+- HIGH: все утверждения имеют валидные chunk_id ссылки, >= 3 источников
+- MEDIUM: есть ссылки, но < 3 источников или partial match
+- LOW: утверждения без ссылок или с invalid chunk_ids
+- CRITICAL: галлюцинация обнаружена (invalid chunk_id или unsupported claim)
+
+Отчёт с confidence:
+```
+## FINDINGS
+
+1. [HIGH] Service "McBz" installed with HYlugqMY.exe [chunk_id=5be9b34a]
+2. [MEDIUM] Attacker used Impacket smbexec [chunk_id=7e4eca99] 
+   (pattern match, tool name inferred)
+3. [LOW] Initial access may have been via NTLM V1 [chunk_id=5cd0845c]
+   (hypothesis, correlation weak)
+```
