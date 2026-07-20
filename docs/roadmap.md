@@ -1,5 +1,83 @@
 # Roadmap / TO-DO
 
+## Context Budget Formula (implemented)
+
+Проблема: при большом количестве логов RAG может перегрузить контекст LLM,
+модель "забуксует" - качество анализа упадёт.
+
+Решение: context budget calculator (src/agents/context_budget.py).
+
+Формула:
+```
+available_tokens = context_window * input_ratio - fixed_overhead
+max_hits = available_tokens // per_hit_tokens
+recommended_hits = min(max_hits, window_adjusted_cap)
+
+window_adjusted_cap = base_cap * sqrt(window_hours / reference_hours)
+```
+
+Параметры:
+- context_window: размер контекста модели (glm-5.2 = 128K, qwen2.5 = 32K)
+- input_ratio: доля контекста для входа (0.75 = 75%, 25% для ответа)
+- fixed_overhead: ~2700 tokens (system prompt + skills + plaso KB + follow-ups)
+- per_hit_tokens: ~55 tokens (chunk_id + score + event text)
+- window_hours: ширина окна инцидента (sqrt scaling - удвоение окна не удваивает hits)
+- min_hits: 30 (минимум для полезного анализа)
+
+Гарантии:
+- total_input_tokens <= context_window * input_ratio (no overflow)
+- response_tokens >= context_window * (1 - input_ratio)
+- hits >= min_hits (полезный минимум)
+
+На кейсе SRV.nebo.ru (333K events, 26 min window, glm-5.2):
+- recommended_hits: ~100 (текущее k*4=100 - в рамках бюджета)
+- tokens used: ~8650 из 96000 доступных
+
+## Subagent Architecture (designed)
+
+Один агент на каждый тип артефакта. Каждый subagent:
+1. Имеет свой skill set (отфильтрованный по домену)
+2. Запрашивает RAG с domain-specific keywords + time window
+3. Генерирует domain-specific mini-report
+4. Orchestrator мержит mini-reports в финальный отчёт
+
+7 subagents (src/agents/subagents.py):
+- evtx_agent (weight=2.0): Security/System/Application EVTX
+- registry_agent (weight=1.5): persistence, Amcache, ShimCache, UserAssist
+- mft_agent (weight=1.5): file timeline, malware drop, encryption
+- prefetch_agent (weight=1.0): execution history
+- network_agent (weight=1.5): source IPs, logon correlation
+- user_activity_agent (weight=1.0): UserAssist, browser, recently used
+- hayabusa_agent (weight=1.0): Sigma rule matches
+
+Budget allocation: total_budget распределяется по subagents пропорционально
+context_weight. EVTX получает больше всех (богатый источник), prefetch меньше.
+
+## Hayabusa Integration (implemented: parser + chunker)
+
+Hayabusa (https://github.com/Yamato-Security/hayabusa) - быстрый анализатор
+Windows Event Log, использует Sigma rules для детекции.
+
+Pipeline:
+```
+[EVTX files] -> hayabusa csv-timeline -p super-verbose -> alerts.csv
+-> parse_hayabusa_csv() -> normalized events (source="SIGMA")
+-> hayabusa_events_to_chunks() -> RAG chunks with MITRE ATT&CK tags
+-> hayabusa_agent queries RAG -> sigma alerts report
+```
+
+Преимущества:
+- Sigma rules = community-maintained, battle-tested (3000+ rules)
+- No hallucination: rule match = deterministic detection
+- MITRE ATT&CK tags включены в metadata
+- Комплементарно LLM: hayabusa находит известные паттерны, LLM коррелирует
+
+Реализовано:
+- src/pipeline/hayabusa.py: parse_hayabusa_csv(), hayabusa_events_to_chunks()
+- Sigma events source="SIGMA", с MITRE tactics/tags в metadata
+- Docker: yamatosecurity/hayabusa image
+- TODO: интеграция в pipeline runner, hayabusa subagent skill
+
 ## Threat Intelligence Integration
 
 ### IOC Enrichment через VirusTotal
