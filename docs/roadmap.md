@@ -1,5 +1,123 @@
 # Roadmap / TO-DO
 
+## Проблемы и ограничения одного агента
+
+В ходе разработки и тестирования на реальном кейсе SRV.nebo.ru мы столкнулись
+с рядом проблем, которые мотивируют переход к multi-agent архитектуре.
+
+### Проблема 1: Retrieval отсекает IOC по score
+
+Симптом: данные есть в индексе (172.16.2.20 в 27 событиях, install.exe в 31,
+kirill в 146), но не попадают в top-k hits, потому что TF-IDF score для
+точных IOC совпадений ниже, чем для семантически похожих registry events.
+
+Решение (текущее): explicit IOC injection - 16 ключевых IOC keywords ищутся
+индивидуально, гарантированно попадают в результат независимо от score.
+Но это hack: список IOC hardcoded, не масштабируется на новые кейсы.
+
+Корневая причина: один агент пытается покрыть все домены (EVTX, registry,
+MFT, network) одним retrieval pass. Score-ranking работает для одного
+домена, но跨-domain сравнение некорректно (registry event с 5 keyword
+совпадениями получает score выше чем EVTX event с 1 IOC совпадением).
+
+Решение (архитектурное): subagents. Каждый subagent работает только в
+своём домене, score-ranking корректен внутри домена.
+
+### Проблема 2: Context dilution
+
+Симптом: при 100 hits в промпте LLM упускает часть IOC, хотя они есть
+в hits. Например, install.exe и ANONYMOUS LOGON были в hits, но LLM
+не упомянул их в отчёте.
+
+Причина: 100 hits = ~6250 tokens. LLM "теряет" детали в длинном контексте,
+особенно когда разные домены смешаны (registry noise 2013 года рядом
+с EVTX incident events 2021 года).
+
+Решение: subagents с domain-specific контекстом. EVTX subagent видит
+только EVTX events, registry subagent - только registry. Меньше шума =
+лучше качество анализа. Orchestrator получает concise mini-reports,
+не raw hits.
+
+### Проблема 3: Time-window detection неточна
+
+Симптом: two-phase retrieval (broad -> detect window -> time-sliced)
+иногда отсекает релевантные события. На SRV.nebo.ru окно определилось
+как 2021-04-19 07:09-08:35, но events с source IPs (07:06:29) и kirill
+logon (07:37:14) попали на границу и были отфильтрованы.
+
+Причина: один агент определяет окно по всем доменам одновременно.
+Registry events (2013-2020) смещают кластеризацию, EVTX events
+разбросаны по разным timestamp_desc (Content Modification Time,
+Last registered Time), что усложняет кластеризацию.
+
+Решение: каждый subagent определяет своё окно независимо.
+EVTX subagent кластеризует только EVTX timestamps, MFT subagent -
+только MFT timestamps. Окно может отличаться по доменам.
+
+### Проблема 4: Нет детерминированной детекции
+
+Симптом: LLM может найти BTOBTO pattern и сопоставить с Impacket smbexec,
+но это вероятностный анализ. Нет гарантии что правило сработает на
+другом кейсе с тем же паттерном.
+
+Причина: один агент полагается на LLM для pattern matching.
+LLM не детерминирована, может пропустить известный паттерн.
+
+Решение: hayabusa subagent. Sigma rules = детерминированная детекция.
+Если правило "Impacket smbexec BTOBTO" существует в Sigma, оно сработает
+всегда. LLM добавляет корреляцию и интерпретацию, но не заменяет rules.
+
+### Проблема 5: Один промпт для всех доменов
+
+Симптом: system prompt содержит инструкции для всех доменов одновременно
+("ищи service installations", "ищи Run keys", "ищи file modifications",
+"ищи source IPs"). LLM не может одинаково хорошо анализировать все домены
+в одном промпте - внимание распределяется, качество падает.
+
+Решение: каждый subagent имеет свой промпт, оптимизированный для домена.
+EVTX prompt: "анализируй Event ID 4624/4625/7045/4688, извлекай source IP,
+logon type, user". Registry prompt: "анализируй Run keys, Amcache, UserAssist,
+ShimCache". MFT prompt: "ищи file creation перед encryption, mass modifications".
+
+### Проблема 6: Нет cross-domain корреляции
+
+Симптом: один агент находит install.exe в UserAssist (REG domain) и
+PSEXESVC в EVTX, но не коррелирует их ("install.exe запущен пользователем
+kirill через RDP, PsExec использовался adm_pavel для lateral movement").
+
+Причина: один агент не имеет явного механизма cross-domain correlation.
+LLM пытается делать это в голове, но при 100 hits это не работает.
+
+Решение: orchestrator получает mini-reports от subagents и делает
+явную корреляцию: "EVTX subagent: kirill RDP type 10 from 172.16.2.20
+at 07:52. MFT subagent: install.exe created at 08:04. UserActivity
+subagent: install.exe executed by kirill. Correlation: kirill launched
+ransomware via RDP after adm_pavel used PsExec for lateral movement."
+
+### Проблема 7: TF-IDF embeddings не семантические
+
+Симптом: "logon authentication" не находит 4624 events, потому что
+TF-IDF не понимает семантику, только keyword overlap.
+
+Причина: Ollama Cloud не предоставляет embeddings endpoint.
+sentence-transformers требует torch (~2 GB).
+
+Решение (текущее): hybrid retrieval (TF-IDF + keyword search + IOC injection).
+Решение (будущее): нейросетевой embedder (nomic-embed-text через локальный
+Ollama, или bge-small-en-v1.5 через sentence-transformers когда torch доступен).
+
+### Ограничения одного агента (резюме)
+
+| Ограничение | Симптом | Решение |
+|-------------|---------|---------|
+| Score-ranking cross-domain | IOC отсекаются | Subagents per domain |
+| Context dilution | LLM упускает IOC | Domain-specific контекст |
+| Time-window неточность | Граничные events теряются | Per-domain window detection |
+| Нет детерминированной детекции | LLM может пропустить паттерн | Hayabusa Sigma rules |
+| Один промпт для всех | Внимание распределяется | Domain-specific prompts |
+| Нет cross-domain корреляции | Связи между доменами теряются | Orchestrator correlation |
+| TF-IDF не семантический | Semantic queries промахиваются | Нейросетевой embedder (TODO) |
+
 ## Context Budget Formula (implemented)
 
 Проблема: при большом количестве логов RAG может перегрузить контекст LLM,
