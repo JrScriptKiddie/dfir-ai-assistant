@@ -1,0 +1,484 @@
+{
+  "android_app_usage": {
+    "description": "Parser for Android usage history (usage-history.xml)",
+    "plugins": {},
+    "category": "parser"
+  },
+  "asl_log": {
+    "description": "Parser for Apple System Log (ASL) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "bencode": {
+    "description": "Parser for Bencoded files.",
+    "plugins": {
+      "bencode_transmission": "Parser for Transmission BitTorrent activity files.",
+      "bencode_utorrent": "Parser for uTorrent active torrent files."
+    },
+    "category": "parser"
+  },
+  "binary_cookies": {
+    "description": "Parser for Safari Binary Cookie files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "bodyfile": {
+    "description": "Parser for SleuthKit version 3 bodyfile.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "bsm_log": {
+    "description": "Parser for Basic Security Module (BSM) event auditing",
+    "plugins": {},
+    "category": "parser"
+  },
+  "chrome_cache": {
+    "description": "Parser for Google Chrome or Chromium Cache files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "chrome_preferences": {
+    "description": "Parser for Google Chrome Preferences files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "cups_ipp": {
+    "description": "Parser for CUPS IPP files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "custom_destinations": {
+    "description": "Parser for Custom destinations jump list",
+    "plugins": {},
+    "category": "parser"
+  },
+  "czip": {
+    "description": "Parser for Compound ZIP files.",
+    "plugins": {
+      "oxml": "Parser for OpenXML (OXML) files."
+    },
+    "category": "parser"
+  },
+  "discord_ios": {
+    "description": "Parser for iOS discord message.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "esedb": {
+    "description": "Parser for Extensible Storage Engine (ESE) Database",
+    "plugins": {
+      "file_history": "Parser for Windows 8 File History ESE database files.",
+      "msie_webcache": "Parser for Internet Explorer WebCache ESE database",
+      "srum": "Parser for System Resource Usage Monitor (SRUM) ESE",
+      "user_access_logging": "Parser for Windows User Access Logging ESE database"
+    },
+    "category": "parser"
+  },
+  "filestat": {
+    "description": "Parser for file system stat information.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "firefox_cache": {
+    "description": "Parser for Mozilla Firefox Cache version 1 file",
+    "plugins": {},
+    "category": "parser"
+  },
+  "firefox_cache2": {
+    "description": "Parser for Mozilla Firefox Cache version 2 file",
+    "plugins": {},
+    "category": "parser"
+  },
+  "fish_history": {
+    "description": "Parser for Fish history files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "fseventsd": {
+    "description": "Parser for MacOS File System Events Disk Log Stream",
+    "plugins": {},
+    "category": "parser"
+  },
+  "java_idx": {
+    "description": "Parser for Java WebStart Cache IDX files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "jsonl": {
+    "description": "Parser for JSON-L log files.",
+    "plugins": {
+      "aws_cloudtrail_log": "Parser for AWS CloudTrail Log.",
+      "azure_activity_log": "Parser for Azure Activity Log.",
+      "azure_application_gateway_access_log": "Parser for Azure Application Gateway",
+      "docker_container_config": "Parser for Docker container",
+      "docker_container_log": "Parser for Docker container log files.",
+      "docker_layer_config": "Parser for Docker layer configuration",
+      "gcp_log": "Parser for Google Cloud (GCP) log.",
+      "ios_application_privacy": "Parser for iOS Application Privacy",
+      "microsoft_audit_log": "Parser for Microsoft (Office) 365 audit"
+    },
+    "category": "parser"
+  },
+  "lnk": {
+    "description": "Parser for Windows Shortcut (LNK) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "locate_database": {
+    "description": "Parser for Locate database file (updatedb).",
+    "plugins": {},
+    "category": "parser"
+  },
+  "mac_keychain": {
+    "description": "Parser for MacOS keychain database files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "mcafee_protection": {
+    "description": "Parser for McAfee Anti-Virus access protection log",
+    "plugins": {},
+    "category": "parser"
+  },
+  "mft": {
+    "description": "Parser for NTFS $MFT metadata files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "msiecf": {
+    "description": "Parser for Microsoft Internet Explorer (MSIE) 4 - 9",
+    "plugins": {},
+    "category": "parser"
+  },
+  "networkminer_fileinfo": {
+    "description": "Parser for NetworkMiner .fileinfos files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "olecf": {
+    "description": "Parser for OLE Compound File (OLECF) format.",
+    "plugins": {
+      "olecf_automatic_destinations": "Parser for Automatic destinations jump list OLE",
+      "olecf_default": "Parser for Generic OLE compound item.",
+      "olecf_document_summary": "Parser for Document summary information",
+      "olecf_summary": "Parser for Summary information"
+    },
+    "category": "parser"
+  },
+  "onedrive_log": {
+    "description": "Parser for OneDrive Log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "opera_global": {
+    "description": "Parser for Opera global history (global_history.dat)",
+    "plugins": {},
+    "category": "parser"
+  },
+  "opera_typed_history": {
+    "description": "Parser for Opera typed history (typed_history.xml)",
+    "plugins": {},
+    "category": "parser"
+  },
+  "pe": {
+    "description": "Parser for Portable Executable (PE) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "plist": {
+    "description": "Parser for Property list (plist) files.",
+    "plugins": {
+      "airport": "Parser for Airport plist files.",
+      "apple_id": "Parser for Apple account information plist",
+      "ios_carplay": "Parser for Apple iOS Car Play application plist",
+      "ios_identityservices": "Parser for Idstatuscache plist files.",
+      "ios_mobile_backup": "Parser for Apple iOS Mobile Backup plist files.",
+      "ios_siminfo": "Parser for iOS SIM Info plist files.",
+      "ios_wifi_known_networks": "Parser for Apple iOS WiFi Known Networks plist",
+      "ipod_device": "Parser for iPod, iPad and iPhone plist files.",
+      "launchd_plist": "Parser for Launchd plist files.",
+      "macos_background_items_plist": "Parser for Mac OS backgrounditems.btm or",
+      "macos_bluetooth": "Parser for MacOS Bluetooth plist files.",
+      "macos_install_history": "Parser for MacOS installation history plist",
+      "macos_login_items_plist": "Parser for Mac OS com.apple.loginitems.plist",
+      "macos_login_window_plist": "Parser for Mac OS login window plist files.",
+      "macos_software_update": "Parser for MacOS software update plist files.",
+      "macos_startup_item_plist": "Parser for Mac OS startup item plist files.",
+      "macuser": "Parser for MacOS user plist files.",
+      "plist_default": "Parser for plist files.",
+      "safari_downloads": "Parser for Safari Downloads plist files.",
+      "safari_history": "Parser for Safari history plist files.",
+      "spotlight": "Parser for Spotlight searched terms plist files.",
+      "spotlight_volume": "Parser for Spotlight volume configuration plist",
+      "time_machine": "Parser for MacOS TimeMachine plist files."
+    },
+    "category": "parser"
+  },
+  "pls_recall": {
+    "description": "Parser for PL SQL cache file (PL-SQL developer recall",
+    "plugins": {},
+    "category": "parser"
+  },
+  "prefetch": {
+    "description": "Parser for Windows Prefetch File (PF).",
+    "plugins": {},
+    "category": "parser"
+  },
+  "recycle_bin": {
+    "description": "Parser for Windows $Recycle.Bin $I files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "recycle_bin_info2": {
+    "description": "Parser for Windows Recycler INFO2 files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "rplog": {
+    "description": "Parser for Windows Restore Point log (rp.log) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "simatic_s7": {
+    "description": "Parser for SIMATIC S7 Log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "spotlight_storedb": {
+    "description": "Parser for Apple Spotlight store database (store.db)",
+    "plugins": {},
+    "category": "parser"
+  },
+  "sqlite": {
+    "description": "Parser for SQLite database files.",
+    "plugins": {
+      "android_airtag": "Parser for AirGuard AirTag Tracker on",
+      "android_app_launch": "Parser for Android application launch",
+      "android_app_usage": "Parser for Android application usage",
+      "android_calls": "Parser for Android call history SQLite",
+      "android_communication_information": "Parser for Android communication",
+      "android_native_downloads": "Parser for Android native downloads SQLite",
+      "android_sms": "Parser for Android text messages (SMS)",
+      "android_turbo": "Parser for Android turbo SQLite database",
+      "android_viber_call": "Parser for Android Viber call history",
+      "android_webview": "Parser for Android WebView SQLite database",
+      "android_webviewcache": "Parser for Android WebViewCache SQLite",
+      "appusage": "Parser for MacOS application usage SQLite",
+      "chrome_17_cookies": "Parser for Google Chrome 17 - 65 cookies",
+      "chrome_27_history": "Parser for Google Chrome 27 and later",
+      "chrome_66_cookies": "Parser for Google Chrome 66 and later",
+      "chrome_8_history": "Parser for Google Chrome 8 - 25 history",
+      "chrome_autofill": "Parser for Google Chrome autofill SQLite",
+      "chrome_extension_activity": "Parser for Google Chrome extension",
+      "dropbox": "Parser for Dropbox sync history database",
+      "edge_load_statistics": "Parser for SQLite database files.",
+      "files_by_google": "Parser for Files by Google SQLite database",
+      "firefox_10_cookies": "Parser for Mozilla Firefox cookies SQLite",
+      "firefox_118_downloads": "Parser for Mozilla Firefox 118 downloads",
+      "firefox_2_cookies": "Parser for Mozilla Firefox cookies SQLite",
+      "firefox_downloads": "Parser for Mozilla Firefox downloads",
+      "firefox_history": "Parser for Mozilla Firefox history SQLite",
+      "google_drive": "Parser for Google Drive snapshot SQLite",
+      "hangouts_messages": "Parser for Google Hangouts conversations",
+      "imessage": "Parser for MacOS and iOS iMessage database",
+      "instagram_ios": "Parser for iOS Instagram threads SQLite",
+      "ios_accounts": "Parser for iOS accounts SQLite database",
+      "ios_datausage": "Parser for iOS data usage SQLite databse",
+      "ios_imohdchat_message": "Parser for IMO HD chat message SQLite",
+      "ios_netusage": "Parser for iOS network usage SQLite",
+      "ios_notes": "Parser for iOS Notes SQLite database files.",
+      "ios_powerlog": "Parser for iOS powerlog SQLite database",
+      "ios_screentime": "Parser for iOS Screen Time SQLite database",
+      "kik_ios": "Parser for iOS Kik messenger SQLite",
+      "kodi": "Parser for Kodi videos SQLite database",
+      "ls_quarantine": "Parser for MacOS launch services",
+      "mac_document_versions": "Parser for MacOS document revisions SQLite",
+      "mac_knowledgec": "Parser for MacOS Duet/KnowledgeC SQLites",
+      "mac_notes": "Parser for MacOS Notes SQLite database",
+      "mac_notificationcenter": "Parser for MacOS Notification Center",
+      "mackeeper_cache": "Parser for MacOS MacKeeper cache SQLite",
+      "macostcc": "Parser for MacOS Transparency, Consent,",
+      "safari_historydb": "Parser for Safari history SQLite database",
+      "skype": "Parser for Skype SQLite database (main.db)",
+      "tango_android_profile": "Parser for Tango on Android profile SQLite",
+      "tango_android_tc": "Parser for Tango on Android TC SQLite",
+      "twitter_android": "Parser for Twitter on Android SQLite",
+      "twitter_ios": "Parser for Twitter on iOS 8 and later",
+      "windows_eventtranscript": "Parser for Windows diagnosis",
+      "windows_push_notification": "Parser for Windows 10 push notification",
+      "windows_timeline": "Parser for Windows 10 timeline SQLite",
+      "zeitgeist": "Parser for Zeitgeist activity SQLite"
+    },
+    "category": "parser"
+  },
+  "symantec_scanlog": {
+    "description": "Parser for Symantec AV Corporate Edition and Endpoint",
+    "plugins": {},
+    "category": "parser"
+  },
+  "systemd_journal": {
+    "description": "Parser for Systemd journal files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "text": {
+    "description": "Parser for text-based log files.",
+    "plugins": {
+      "android_logcat": "Parser for Android logcat files.",
+      "apache_access": "Parser for Apache access log (access.log)",
+      "apt_history": "Parser for Advanced Packaging Tool (APT)",
+      "atlassian_bitbucket": "Parser for Atlassian Bitbucket log files.",
+      "atlassian_confluence": "Parser for Atlassian Confluence log files.",
+      "atlassian_jira": "Parser for Atlassian Jira log files.",
+      "aws_elb_access": "Parser for AWS ELB Access log files.",
+      "bash_history": "Parser for Bash history files.",
+      "bitbucket_access": "Parser for Atlassian Bitbucket access log",
+      "bitbucket_audit": "Parser for Atlassian Bitbucket audit log",
+      "confluence_access": "Parser for Confluence access log",
+      "cri_log": "Parser for Container Runtime Interface log",
+      "dpkg": "Parser for Debian package manager log",
+      "gdrive_synclog": "Parser for Google Drive Sync log files.",
+      "googlelog": "Parser for Google-formatted log files.",
+      "ios_lockdownd": "Parser for iOS lockdown daemon log.",
+      "ios_logd": "Parser for iOS sysdiagnose logd files.",
+      "ios_sysdiag_log": "Parser for iOS sysdiag log.",
+      "jira_access": "Parser for Jira access log (access.log)",
+      "mac_appfirewall_log": "Parser for MacOS Application firewall log",
+      "mac_securityd": "Parser for MacOS security daemon (securityd)",
+      "mac_wifi": "Parser for MacOS Wi-Fi log (wifi.log) files.",
+      "macos_launchd_log": "Parser for Mac OS launchd log files.",
+      "popularity_contest": "Parser for Popularity Contest log files.",
+      "postgresql": "Parser for PostgreSQL application log files.",
+      "powershell_transcript": "Parser for PowerShell transcript event.",
+      "santa": "Parser for Santa log (santa.log) files.",
+      "sccm": "Parser for System Center Configuration",
+      "selinux": "Parser for SELinux audit log (audit.log)",
+      "setupapi": "Parser for Windows SetupAPI log files.",
+      "skydrive_log_v1": "Parser for OneDrive (or SkyDrive) version 1",
+      "skydrive_log_v2": "Parser for OneDrive (or SkyDrive) version 2",
+      "snort_fastlog": "Parser for Snort3/Suricata fast-log alert",
+      "sophos_av": "Parser for Sophos anti-virus log file",
+      "syslog": "Parser for System log (syslog) files.",
+      "syslog_traditional": "Parser for Traditional system log (syslog)",
+      "teamviewer_application_log": "Parser for TeamViewer application log file",
+      "teamviewer_connections_incoming": "Parser for TeamViewer",
+      "teamviewer_connections_outgoing": "Parser for TeamViewer connections.txt log",
+      "viminfo": "Parser for Viminfo files.",
+      "vsftpd": "Parser for vsftpd log files.",
+      "winfirewall": "Parser for Windows Firewall log files.",
+      "winiis": "Parser for Microsoft IIS log files.",
+      "xchatlog": "Parser for XChat log files.",
+      "xchatscrollback": "Parser for XChat scrollback log files.",
+      "zsh_extended_history": "Parser for ZSH extended history files."
+    },
+    "category": "parser"
+  },
+  "trendmicro_url": {
+    "description": "Parser for Trend Micro Office Web Reputation log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "trendmicro_vd": {
+    "description": "Parser for Trend Micro Office Scan Virus Detection log",
+    "plugins": {},
+    "category": "parser"
+  },
+  "unified_logging": {
+    "description": "Parser for Apple Unified Logging (AUL) 64-bit tracev3",
+    "plugins": {},
+    "category": "parser"
+  },
+  "usnjrnl": {
+    "description": "Parser for NTFS USN change journal ($UsnJrnl:$J) file",
+    "plugins": {},
+    "category": "parser"
+  },
+  "utmp": {
+    "description": "Parser for Linux libc6 utmp files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "utmpx": {
+    "description": "Parser for Mac OS X 10.5 utmpx files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "wincc_sys": {
+    "description": "Parser for WinCC Sys Log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "windefender_history": {
+    "description": "Parser for Windows Defender scan DetectionHistory",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winevt": {
+    "description": "Parser for Windows EventLog (EVT) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winevtx": {
+    "description": "Parser for Windows XML EventLog (EVTX) files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winjob": {
+    "description": "Parser for Windows Scheduled Task job (or at-job)",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winpca_db0": {
+    "description": "Parser for Windows PCA DB0 log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winpca_dic": {
+    "description": "Parser for Windows PCA DIC log files.",
+    "plugins": {},
+    "category": "parser"
+  },
+  "winreg": {
+    "description": "Parser for Windows NT Registry (REGF) files.",
+    "plugins": {
+      "amcache": "Parser for AMCache (AMCache.hve).",
+      "appcompatcache": "Parser for Application Compatibility",
+      "bagmru": "Parser for BagMRU (or ShellBags)",
+      "bam": "Parser for Background Activity",
+      "ccleaner": "Parser for CCleaner Registry data.",
+      "diagnosed_applications": "Parser for Diagnosed Applications",
+      "explorer_mountpoints2": "Parser for Windows Explorer mount",
+      "explorer_programscache": "Parser for Windows Explorer Programs",
+      "microsoft_office_mru": "Parser for Microsoft Office MRU",
+      "microsoft_outlook_mru": "Parser for Microsoft Outlook search MRU",
+      "motherboard_info": "Parser for Motherboard Info Registry",
+      "mrulist_shell_item_list": "Parser for Most Recently Used (MRU)",
+      "mrulist_string": "Parser for Most Recently Used (MRU)",
+      "mrulistex_shell_item_list": "Parser for Most Recently Used (MRU)",
+      "mrulistex_string": "Parser for Most Recently Used (MRU)",
+      "mrulistex_string_and_shell_item": "Parser for Most Recently Used (MRU)",
+      "mrulistex_string_and_shell_item_list": "Parser for Most Recently Used (MRU)",
+      "msie_zone": "Parser for Microsoft Internet Explorer",
+      "mstsc_rdp": "Parser for Terminal Server Client",
+      "mstsc_rdp_mru": "Parser for Terminal Server Client Most",
+      "network_drives": "Parser for Windows network drives",
+      "networks": "Parser for Windows networks",
+      "userassist": "Parser for User Assist Registry data.",
+      "windows_boot_execute": "Parser for Boot Execution Registry data.",
+      "windows_boot_verify": "Parser for Windows boot verification",
+      "windows_run": "Parser for Run and run once Registry",
+      "windows_sam_users": "Parser for Security Accounts Manager",
+      "windows_services": "Parser for Windows drivers and services",
+      "windows_shutdown": "Parser for Windows last shutdown",
+      "windows_task_cache": "Parser for Windows Task Scheduler cache",
+      "windows_timezone": "Parser for Windows time zone Registry",
+      "windows_typed_urls": "Parser for Windows Explorer typed URLs",
+      "windows_usb_devices": "Parser for Windows USB device Registry",
+      "windows_usbstor_devices": "Parser for Windows USB Plug And Play",
+      "windows_version": "Parser for Windows version (product)",
+      "winlogon": "Parser for Windows log-on Registry data.",
+      "winrar_mru": "Parser for WinRAR History Registry data.",
+      "winreg_default": "Parser for Windows Registry data."
+    },
+    "category": "parser"
+  }
+}

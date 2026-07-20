@@ -1,0 +1,29 @@
+# Docker-образ с plaso/log2timeline для DFIR AI Assistant
+# Используем официальный образ plaso из Docker Hub (log2timeline/plaso)
+# При необходимости - собираем из исходников для актуальной версии
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Базовые пакеты и plaso из PPA
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    gnupg \
+    ca-certificates \
+    && add-apt-repository -y ppa:gift/stable \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        plaso-tools \
+        python3-plaso \
+    && rm -rf /var/lib/apt/lists/*
+
+# Рабочая директория
+WORKDIR /work
+
+# Скрипт-обёртка запуска plaso-пайплайна
+COPY run_plaso.sh /usr/local/bin/run_plaso.sh
+RUN chmod +x /usr/local/bin/run_plaso.sh
+
+# Точка входа - скрипт, который выполняет log2timeline -> pinfo -> psort
+ENTRYPOINT ["/usr/local/bin/run_plaso.sh"]

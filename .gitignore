@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# uv
+.uv-cache/
+.python-version
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+data/raw/
+data/processed/
+data/timelines/
+data/triage/
+*.pcap
+*.raw
+*.dd
+*.vmdk
+*.qcow2
+*.e01
+*.log
+*.evtx
+*.plist
+*.registry
+# Forensic artifacts / test data (binary, too large for git)
+test-case/
+*.hve
+*.evtx
+*.evtx.copy*
+*.blf
+*.ftl
+$MFT
+
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+
+# RAG/vector store
+*.faiss
+*.sqlite
+chromadb/
+turbovec/
+vectorstore/
+*.index
+
+# Logs
+logs/
+*.log
+log2timeline-*.log.gz
+psort-*.log.gz
+*.log.gz
+
+# Author's private materials (ideas, drafts) - not published
+article/
+desktop.ini
+
+# Docker volumes
+docker_data/

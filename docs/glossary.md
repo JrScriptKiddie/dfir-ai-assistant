@@ -1,0 +1,26 @@
+# Глоссарий
+
+- **DFIR** - Digital Forensics and Incident Response
+- **Триаж** - быстрая сборка артефактов с хоста для первичного реагирования
+- **KAPE** - Kroll Artifact Parser and Extractor - инструмент триажа Windows-хостов
+- **Velociraptor** - open-source инструмент для triage и endpoint visibility
+- **plaso / log2timeline** - инструмент Google для построения супертаймлайна из forensic-артефактов
+- **psort / pinfo** - утилиты plaso для сортировки и анализа хранилища
+- **Супертаймлайн** - объединённый таймлайн из всех источников артефактов
+- **EVTX** - формат Windows Event Log
+- **Prefetch (.pf)** - Windows-артефакт, кэш запуска приложений
+- **ShimCache / Amcache** - Windows-артефакты Application Compatibility Cache
+- **MFT** - Master File Table, NTFS
+- **USN Journal** - Update Sequence Number, журнал изменений NTFS
+- **RAG** - Retrieval-Augmented Generation
+- **turboVEC** - внутреннее векторное хранилище проекта
+- **Chunk** - единица индексации в RAG (для событий - 1 лог = 1 chunk)
+- **Embedding** - векторное представление текста
+- **LLM-wiki** - корпус threat-intel отчётов, нормализованных для RAG
+- **TTP** - Tactics, Techniques, Procedures (MITRE ATT&CK)
+- **IOC** - Indicator of Compromise
+- **Сабагент** - специализированный агент по домену артефактов
+- **case_id** - идентификатор инцидента/кейса (UUID)
+- **chunk.id** - детерминированный идентификатор чанка (sha1 от ключевых полей)
+- **Citation** - ссылка агента на source (chunk.id) в ответе
+- **Hallucination** - галлюцинация LLM - утверждение без оснований в данных

@@ -1,0 +1,366 @@
+Supported Formats — Plaso (log2timeline) 20260720 documentation 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ Plaso (log2timeline)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ User documentation 
+ 
+ 
+ Developer documentation 
+ 
+ 
+ Troubleshooting 
+ 
+ 
+ Supported formats 
+ Storage media image file formats 
+ Volume system formats 
+ File system formats 
+ File formats 
+ Bencode file formats 
+ Browser cookie formats 
+ Compound ZIP file formats 
+ ESE database file formats 
+ JSON-L log file formats 
+ OLE Compound File formats 
+ Property list (plist) formats 
+ SQLite database file formats 
+ Text-based log file formats 
+ Windows Registry formats 
+ Hashers Supported 
+ 
+ 
+ 
+ 
+ API documentation 
+ 
+
+ 
+ 
+ 
+
+ 
+ 
+ Plaso (log2timeline) 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ Supported Formats 
+ 
+ View page source 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Supported Formats  
+ The information below is based of version 20221212 
+ 
+ Storage media image file formats  
+ Storage media image file format support is provided by dfVFS . 
+ 
+ 
+ Volume system formats  
+ Volume system format support is provided by dfVFS . 
+ 
+ 
+ File system formats  
+ File System Format support is provided by dfVFS . 
+ 
+ 
+ File formats  
+ 
+ Android usage history (usage-history.xml) file 
+ Apple System Log (ASL) 
+ Basic Security Module (BSM) 
+ Bencode files 
+ Chrome Disk Cache Format 
+ Chrome preferences 
+ CUPS IPP 
+ Extensible Storage Engine (ESE) Database File (EDB) format using libesedb 
+ Firefox Cache 
+ Java WebStart IDX 
+ Jump Lists .customdestinations-ms files 
+ MacOS Keychain 
+ mactime logs 
+ McAfee Anti-Virus Logs 
+ Microsoft Internet Explorer History File Format (also known as msie 4 - 9 cache files or index.dat) using libmsiecf 
+ NTFS $MFT and $UsnJrnl:$J using libfsntfs 
+ OLE Compound File using libolecf 
+ Opera Browser history 
+ OpenXML 
+ Portable Executable (PE) files using pefile 
+ PL SQL cache file (PL-SQL developer recall files) 
+ Property list (plist) format using plistlib 
+ Restore Point logs (rp.log) 
+ Safari Binary Cookies 
+ SCCM client logs 
+ SkyDrive multi-line log and error log files 
+ SQLite database format using sqlite 
+ Symantec AV Corporate Edition and Endpoint Protection log 
+ Syslog 
+ utmp, utmpx 
+ Windows Event Log (EVT) using libevt 
+ Windows Job files (also known as “at jobs”) 
+ Windows Prefetch files 
+ Windows Recycle bin (info2 and $i/$r) 
+ Windows NT Registry File (REGF) using libregf 
+ Windows Shortcut File (LNK) format using liblnk (including shell item support) 
+ Windows XML Event Log (EVTX) using libevtx 
+ Viminfo files 
+ Zsh history files 
+ 
+ 
+ 
+ Bencode file formats  
+ 
+ Transmission BitTorrent activity file 
+ uTorrent active torrent file 
+ 
+ 
+ 
+ Browser cookie formats  
+ 
+ Google Analytics __utma cookie 
+ Google Analytics __utmb cookie 
+ Google Analytics __utmt cookie 
+ Google Analytics __utmz cookie 
+ 
+ 
+ 
+ Compound ZIP file formats  
+ 
+ OpenXML (OXML) file 
+ 
+ 
+ 
+ ESE database file formats  
+ 
+ Internet Explorer WebCache ESE database (WebCacheV01.dat, WebCacheV24.dat) file 
+ System Resource Usage Monitor (SRUM) ESE database file 
+ Windows 8 File History ESE database file 
+ 
+ 
+ 
+ JSON-L log file formats  
+ 
+ AWS CloudTrail logs 
+ Azure Activity logs 
+ Azure Application Gateway access log 
+ Docker container configuration file 
+ Docker container log file 
+ Docker layer configuration file 
+ Google Cloud (GCP) log 
+ iOS Application Privacy report 
+ Microsoft (Office) 365 audit log 
+ 
+ 
+ 
+ OLE Compound File formats  
+ 
+ Automatic destinations jump list OLE compound file (.automaticDestinations-ms) 
+ Document summary information (\0x05DocumentSummaryInformation) 
+ Summary information (\0x05SummaryInformation) (top-level only) 
+ 
+ 
+ 
+ Property list (plist) formats  
+ 
+ MacOS Airport plist file 
+ Apple account information plist file 
+ MacOS Bluetooth plist file 
+ Apple iOS Car Play Application plist file 
+ iPod, iPad and iPhone plist file 
+ MacOS Launchd plist file 
+ MacOS installation history plist file 
+ MacOS software update plist file 
+ MacOS user plist file 
+ Safari history plist file 
+ Spotlight searched terms plist file 
+ Spotlight volume configuration plist file 
+ MacOS TimeMachine plist file 
+ 
+ 
+ 
+ SQLite database file formats  
+ 
+ Android call history SQLite database (contacts2.db) file 
+ Android text messages (SMS) SQLite database (mmssms.dbs) file 
+ Android WebViewCache SQLite database file 
+ Android WebView SQLite database file 
+ Dropbox sync_history SQLite database file 
+ Google Chrome 17 - 65 cookies SQLite database file 
+ Google Chrome 27 and later history SQLite database file 
+ Google Chrome 66 and later cookies SQLite database file 
+ Google Chrome 8 - 25 history SQLite database file 
+ Google Chrome autofill SQLite database (Web Data) file 
+ Google Chrome extension activity SQLite database file 
+ Google Drive snapshot SQLite database (snapshot.db) file 
+ Google Hangouts conversations SQLite database (babel.db) file 
+ iOS Kik messenger SQLite database (kik.sqlite) file 
+ Kodi videos SQLite database (MyVideos.db) file 
+ MacOS and iOS iMessage database (chat.db, sms.db) file 
+ MacOS application usage SQLite database (application_usage.sqlite) file 
+ MacOS document revisions SQLite database file 
+ MacOS Duet / KnowledgeC SQLites database file 
+ MacOS launch services quarantine events database SQLite database file 
+ MacOS MacKeeper cache SQLite database file 
+ MacOS Notes SQLite database (NotesV7.storedata) file 
+ MacOS Notification Center SQLite database file 
+ MacOS Transparency, Consent, Control (TCC) SQLite database (TCC.db) file 
+ Mozilla Firefox cookies SQLite database file 
+ Mozilla Firefox downloads SQLite database (downloads.sqlite) file 
+ Mozilla Firefox history SQLite database (places.sqlite) file 
+ Safari history SQLite database (History.db) file 
+ Skype SQLite database (main.db) file 
+ Tango on Android profile SQLite database file 
+ Tango on Android TC SQLite database file 
+ Twitter on Android SQLite database file 
+ Twitter on iOS 8 and later SQLite database (twitter.db) file 
+ Windows 10 Timeline SQLite database (ActivitiesCache.db) file 
+ Zeitgeist activity SQLite database file 
+ 
+ 
+ 
+ Text-based log file formats  
+ 
+ Advanced Packaging Tool (APT) History log file 
+ Android logcat file 
+ Apache access log (access.log) file 
+ AWS ELB Access log file 
+ Bash history file 
+ Confluence access log (access.log) file 
+ Debian package manager log (dpkg.log) file 
+ Google Drive Sync log file 
+ Google-formatted log file 
+ iOS lockdown daemon log 
+ iOS sysdiag log 
+ iOS sysdiagnose logd file 
+ MacOS Application firewall log (appfirewall.log) file 
+ MacOS security daemon (securityd) log file 
+ MacOS Wi-Fi log (wifi.log) file 
+ Microsoft IIS log file 
+ OneDrive (or SkyDrive) version 1 log file 
+ OneDrive (or SkyDrive) version 2 log file 
+ Popularity Contest log file 
+ PostgreSQL application log file 
+ Santa log (santa.log) file 
+ SELinux audit log (audit.log) file 
+ Snort3/Suricata fast-log alert log (fast.log) file 
+ Sophos anti-virus log file (SAV.txt) file 
+ System Center Configuration Manager (SCCM) client log file 
+ System log (syslog) file 
+ Viminfo file 
+ vsftpd log file 
+ Windows Firewall log file 
+ Windows SetupAPI log file 
+ XChat log file 
+ XChat scrollback log file 
+ ZSH extended history file 
+ 
+ 
+ 
+ Windows Registry formats  
+ 
+ AMCache (AMCache.hve) 
+ Application Compatibility Cache Registry data 
+ Background Activity Moderator (BAM) Registry data 
+ BagMRU (or ShellBags) Registry data 
+ Boot Execution Registry data 
+ CCleaner Registry data 
+ Microsoft Internet Explorer zone settings Registry data 
+ Microsoft Office MRU Registry data 
+ Microsoft Outlook search MRU Registry data 
+ Most Recently Used (MRU) Registry data 
+ Run and run once Registry data 
+ Security Accounts Manager (SAM) users Registry data 
+ Terminal Server Client Connection Registry data 
+ Terminal Server Client Most Recently Used (MRU) Registry data 
+ User Assist Registry data 
+ Windows boot verification Registry data 
+ Windows drivers and services Registry data 
+ Windows Explorer mount points Registry data 
+ Windows Explorer Programs Cache Registry data 
+ Windows Explorer typed URLs Registry data 
+ Windows last shutdown Registry data 
+ Windows log-on Registry data 
+ Windows network drives Registry data 
+ Windows networks (NetworkList) Registry data 
+ Windows Task Scheduler cache Registry data 
+ Windows time zone Registry data 
+ Windows USB device Registry data 
+ Windows USB Plug And Play Manager USBStor Registry data 
+ Windows version (product) Registry data 
+ WinRAR History Registry data 
+ 
+ 
+ 
+ Hashers Supported  
+ 
+ MD5 
+ SHA1 
+ SHA256 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ Previous 
+ Next 
+ 
+
+ 
+
+ 
+ © Copyright The Plaso (log2timeline) authors. 
+ 
+
+ Built with Sphinx using a
+ theme 
+ provided by Read the Docs .

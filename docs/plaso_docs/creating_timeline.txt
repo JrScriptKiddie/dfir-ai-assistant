@@ -1,0 +1,134 @@
+Creating a timeline — Plaso (log2timeline) 20260720 documentation 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ Plaso (log2timeline)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ User documentation 
+ How to get started 
+ Creating a timeline 
+ Using psteal 
+ Using log2timeline and psort 
+ 
+ 
+ Using collection Filters 
+ Event filters 
+ Analysis plugins 
+ Tips and Tricks 
+ Feature requests and bug reports 
+ Log2Timeline Perl (Legacy) 
+ 
+ 
+ 
+ 
+ Developer documentation 
+ 
+ 
+ Troubleshooting 
+ 
+ 
+ Supported formats 
+ 
+ 
+ API documentation 
+ 
+
+ 
+ 
+ 
+
+ 
+ 
+ Plaso (log2timeline) 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ User documentation 
+ Creating a timeline 
+ 
+ View page source 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Creating a timeline  
+ 
+ Using psteal  
+ The quickest way to generate a timeline with Plaso is using the “psteal”
+frontend. For example: 
+ psteal . py -- source image . raw - o dynamic - w registrar . csv 
+ 
+ 
+ This will produce a CSV file containing all the events from an image, with some
+sensible defaults. 
+ 
+ 
+ Using log2timeline and psort  
+ Alternatively you can use “log2timeline” and “psort”. For example: 
+ log2timeline.py --storage-file timeline.plaso image.raw
+psort.py -o dynamic -w registrar.csv timeline.plaso
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ Previous 
+ Next 
+ 
+
+ 
+
+ 
+ © Copyright The Plaso (log2timeline) authors. 
+ 
+
+ Built with Sphinx using a
+ theme 
+ provided by Read the Docs .

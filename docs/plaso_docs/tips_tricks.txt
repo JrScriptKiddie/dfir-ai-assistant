@@ -1,0 +1,125 @@
+Tips and Tricks — Plaso (log2timeline) 20260720 documentation 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ Plaso (log2timeline)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ User documentation 
+ How to get started 
+ Creating a timeline 
+ Using collection Filters 
+ Event filters 
+ Analysis plugins 
+ Tips and Tricks 
+ Import the output of a third party tool into Plaso 
+ 
+ 
+ Feature requests and bug reports 
+ Log2Timeline Perl (Legacy) 
+ 
+ 
+ 
+ 
+ Developer documentation 
+ 
+ 
+ Troubleshooting 
+ 
+ 
+ Supported formats 
+ 
+ 
+ API documentation 
+ 
+
+ 
+ 
+ 
+
+ 
+ 
+ Plaso (log2timeline) 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ User documentation 
+ Tips and Tricks 
+ 
+ View page source 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Tips and Tricks  
+ This is a collection of few tips and tricks that can be used with Plaso 
+ 
+ Import the output of a third party tool into Plaso  
+ If want to import the output of a third party tool into your Plaso timeline
+export it to bodyfile format. The Plaso bodyfile parser can parse a bodyfile. 
+ Note that the bodyfile format has numerous limitations see:
+ ForensicsWiki: Bodyfile 
+ The Plaso bodyfile parser supports timestamps with a fraction of a second since
+ Aug 25, 2020 . 
+ 
+ 
+
+ 
+ 
+ 
+ Previous 
+ Next 
+ 
+
+ 
+
+ 
+ © Copyright The Plaso (log2timeline) authors. 
+ 
+
+ Built with Sphinx using a
+ theme 
+ provided by Read the Docs .
